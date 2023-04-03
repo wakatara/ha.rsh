@@ -104,24 +104,21 @@ impl Harsh {
         let habits_file = BufReader::new(&f);
 
         let mut habits = vec![];
-        let mut heading: &str = "";
+        let mut heading: Box<String> = Box::new("".to_string());
         for line in habits_file.lines() {
             let l = line.unwrap();
             if l.chars().count() > 0 {
                 let first_char = l.chars().nth(0).unwrap(); 
-                if first_char == '#' || first_char == '\n' {}                
-                else if first_char == '!' {
-                    let split = l.split("! ");
-                    let result: Vec<&str> = split.collect();
-                    let heading = result[1].to_string();
-                    println!("{:#?}", heading);
-                } else {
-                let splits = l.split(": ");
-                let result:Vec<&str> = splits.collect();
-                habits.push(Habit {
-                    heading: heading.to_string(), 
-                    habit: result[0].to_string(),
-                   frequency: result[1].parse().unwrap(),
+                if first_char == '!' {
+                    let mut split = l.split("! ");
+                    *heading = String::from(split.nth(1).unwrap());
+                } else if !(first_char == '#' || first_char == '\n') {
+                    let splits: _ = l.split(": ");
+                    let result:Vec<&str> = splits.collect();
+                    habits.push(Habit {
+                        heading: heading.to_string(), 
+                        habit: result[0].to_string(),
+                        frequency: result[1].parse().unwrap(),
                 })}
         }}
         println!("{:#?}", habits);
